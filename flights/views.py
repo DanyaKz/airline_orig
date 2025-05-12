@@ -9,7 +9,7 @@ import json
 
 # регистрация 
 def register_view(request):
-
+    user=request.user
     message=""
 
     if request.is_new_user:
@@ -114,7 +114,7 @@ def airport_detail(request, airport_id):
 
     if request.is_new_user:
         message = "Добро пожаловать на сайт! Вот ваш промо-код: WELCOME2025"
-        
+
     airport = get_object_or_404(Airport, pk=airport_id)
     departures = Flight.objects.filter(origin=airport)
     arrivals = Flight.objects.filter(destination=airport)

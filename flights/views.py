@@ -9,8 +9,7 @@ import json
 
 # регистрация 
 def register_view(request):
-    user=request.user
-    message=""
+    message = ""
 
     if request.is_new_user:
         message = "Добро пожаловать на сайт! Вот ваш промо-код: WELCOME2025"
@@ -18,12 +17,13 @@ def register_view(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
             Passenger.objects.create(user=user)
             login(request, user)
             return redirect('login')
     else:
         form = RegisterForm()
+    
     return render(request, 'flights/register.html', {'form': form, 'message': message})
 
 # логин

@@ -1,4 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import User
+import string
+import random
 
 class Airport(models.Model):
     code = models.CharField(max_length=3, unique=True)
@@ -16,10 +19,32 @@ class Flight(models.Model):
     def __str__(self):
         return f"{self.origin} to {self.destination} - {self.duration} min"
 
+
+# наследуем тут Юзера, чтобы расширить его функционал (просто фановое расширение)
 class Passenger(models.Model):
-    first_name = models.TextField(blank=True, null=True)
-    email = models.TextField(blank=True, null=True)
-    flights = models.ManyToManyField("Flight", blank=True, related_name="passengers")
+    user = models.OneToOneField(User, on_delete=models.CASCADE , blank=True, null=True , related_name='passenger_profile')
+    passport_number = models.CharField(max_length=20, blank=True, null=True)
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
 
     def __str__(self):
-            return f"{self.email}"
+        return f"{self.user.username} — {self.passport_number}"
+
+
+
+class Booking(models.Model):
+    passenger = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bookings")
+    flight = models.ForeignKey(Flight, on_delete=models.CASCADE, related_name="bookings")
+    booking_code = models.CharField(max_length=64, unique=True, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.booking_code:
+            self.booking_code = self.generate_booking_code()
+        super().save(*args, **kwargs)
+
+    def generate_booking_code(self):
+        letters = string.ascii_uppercase
+        numbers = string.digits
+        return ''.join(random.choices(letters + numbers, k=10))
+
+    def __str__(self):
+        return f"Booking: {self.booking_code} — {self.passenger} на рейс {self.flight}"

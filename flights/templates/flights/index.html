@@ -28,13 +28,5 @@
     </div>
     {% endfor %}
 
-<h1 class="text-center mb-4">Список моих полетов</h1>
-<form class ="row mb-4" method="get" action="{% url 'passenger_detail' %}">
-    <div class="input-group mb-3">
-    <span class="input-group-text" id="basic-addon1">@</span>
-    <input type="text" name="email" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="basic-addon1">
-    <button type="submit" class = "btn btn-outline-info">Поиск</button>
-    </div>
-</form>
 </div>
 {% endblock %}

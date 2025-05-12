@@ -9,6 +9,12 @@ import json
 
 # регистрация 
 def register_view(request):
+
+    message=""
+
+    if request.is_new_user:
+        message = "Добро пожаловать на сайт! Вот ваш промо-код: WELCOME2025"
+
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -18,10 +24,16 @@ def register_view(request):
             return redirect('login')
     else:
         form = RegisterForm()
-    return render(request, 'flights/register.html', {'form': form})
+    return render(request, 'flights/register.html', {'form': form, 'message': message})
 
 # логин
 def login_view(request):
+    
+    message=""
+
+    if request.is_new_user:
+        message = "Добро пожаловать на сайт! Вот ваш промо-код: WELCOME2025"
+
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -35,7 +47,7 @@ def login_view(request):
                 messages.error(request, "Неверный логин или пароль")
     else:
         form = LoginForm()
-    return render(request, 'flights/login.html', {'form': form})
+    return render(request, 'flights/login.html', {'form': form,'message': message})
 
 # логаут
 def logout_view(request):
@@ -44,14 +56,26 @@ def logout_view(request):
 
 # главная страница
 def index(request):
+
+    message=""
+
+    if request.is_new_user:
+        message = "Добро пожаловать на сайт! Вот ваш промо-код: WELCOME2025"
+
     flights = Flight.objects.all()
     airports = Airport.objects.all() 
-    return render(request, "flights/index.html", {"flights": flights, "airports":airports})
+    return render(request, "flights/index.html", {"flights": flights, "airports":airports, 'message': message})
 
 # детализированно о рейсе (бронь и просмотр)
 def flight_detail(request, flight_id):
+
+    message=""
+
+    if request.is_new_user:
+        message = "Добро пожаловать на сайт! Вот ваш промо-код: WELCOME2025"
+
     flight = get_object_or_404(Flight, pk=flight_id)
-    return render(request, "flights/flight_detail.html", {"flight": flight})
+    return render(request, "flights/flight_detail.html", {"flight": flight, 'message': message})
 
 @login_required
 @require_http_methods(["POST"])
@@ -85,10 +109,16 @@ def create_booking_api(request):
 
 # информация аэропорта
 def airport_detail(request, airport_id):
+
+    message=""
+
+    if request.is_new_user:
+        message = "Добро пожаловать на сайт! Вот ваш промо-код: WELCOME2025"
+        
     airport = get_object_or_404(Airport, pk=airport_id)
     departures = Flight.objects.filter(origin=airport)
     arrivals = Flight.objects.filter(destination=airport)
-    return render(request, "flights/airport_detail.html", {"airport": airport, "departures": departures, "arrivals": arrivals})
+    return render(request, "flights/airport_detail.html", {"airport": airport, "departures": departures, "arrivals": arrivals, 'message': message})
 
 
 # профиль юзера
